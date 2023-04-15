@@ -69,7 +69,7 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         console.log("Contract Deployed at Address: ", contract.address);
 
         var registryAbi = ContractRegistry.abi;
-        const registryAddress = "0xbCF26943C0197d2eE0E5D05c716Be60cc2761508";
+        const registryAddress = process.env.CONTRACT_REGISTRY_ADDRESS;
         const registry = new ethers.Contract(registryAddress, registryAbi, signer);
 
         const owner = address;
