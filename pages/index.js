@@ -3,20 +3,20 @@ import { useState, useEffect } from 'react'
 import Header from '@/components/header';
 import { ethers } from 'ethers';
 
-export default function Home(props) {
+export default function Home({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected }) {
   async function checkWallet() {
     try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-        props.setProvider(web3Provider);
+        setProvider(web3Provider);
         const signer = web3Provider.getSigner();
-        props.setAddress((await signer).getAddress());
+        setAddress((await signer).getAddress());
 
         window.ethereum.on('accountsChanged', async () => {
             if(window.ethereum.selectedAd1dress) {
-              (await signer).getAddress().then(props.setAddress);
+              (await signer).getAddress().then(setAddress);
             } else {
-              props.setIsWalletConnected(false);
+              setIsWalletConnected(false);
             }
         });
 
@@ -24,7 +24,7 @@ export default function Home(props) {
             window.location.reload();
         });
 
-        props.setIsWalletConnected(true);
+        setIsWalletConnected(true);
     }catch(err) {
         console.log(err);
     }
@@ -42,7 +42,7 @@ export default function Home(props) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header metamaskMessage={props.metamaskMessage} setMetamaskMessage={props.setMetamaskMessage} isWalletConnected={props.isWalletConnected} setIsWalletConnected={props.setIsWalletConnected} provider={props.provider} setProvider={props.setProvider} address={props.address} setAddress={props.setAddress}></Header>
+      <Header metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} provider={provider} setProvider={setProvider} address={address} setAddress={setAddress}></Header>
     </>
   )
 }

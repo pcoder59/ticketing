@@ -1,22 +1,22 @@
 import Link from "next/link";
 import { ethers } from "ethers";
 
-export default function Header(props) {
+export default function Header({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected }) {
 
     async function handleConnectWallet() {
         if(typeof window.ethereum !== "undefined") {
             try {
                 await window.ethereum.request({ method: "eth_requestAccounts" });
                 const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-                props.setProvider(web3Provider);
+                setProvider(web3Provider);
                 const signer = web3Provider.getSigner();
-                props.setAddress((await signer).getAddress());
+                setAddress((await signer).getAddress());
 
                 window.ethereum.on('accountsChanged', async () => {
                     if(window.ethereum.selectedAddress) {
-                        (await signer).getAddress().then(props.setAddress);
+                        (await signer).getAddress().then(setAddress);
                     } else {
-                        props.setIsWalletConnected(false);
+                        setIsWalletConnected(false);
                     }
                 });
 
@@ -24,18 +24,18 @@ export default function Header(props) {
                     window.location.reload();
                 });
 
-                props.setIsWalletConnected(true);
+                setIsWalletConnected(true);
             }catch(err) {
                 console.log(err);
             }
         } else {
-            props.setMetamaskMessage(true);
+            setMetamaskMessage(true);
         }
     }
 
     return (
         <>
-            {props.metamaskMessage?
+            {metamaskMessage?
                 <div id="metamask-message">
                 <p>
                     Metamask is not installed or not logged in. Please{" "}
@@ -55,7 +55,7 @@ export default function Header(props) {
                         <Link href="/">Home</Link>
                     </li>
                     
-                    {props.isWalletConnected ? (
+                    {isWalletConnected ? (
                         <div>
                         <li style={{display: 'inline'}}>
                             <a href="/buy-tickets">Buy Tickets</a>
@@ -72,7 +72,7 @@ export default function Header(props) {
                         </li>
                         </div>
                     ) : null}
-                    {!props.isWalletConnected?
+                    {!isWalletConnected?
                         <li>
                             <a href="#" id="connect" onClick={handleConnectWallet}>
                             Connect Wallet

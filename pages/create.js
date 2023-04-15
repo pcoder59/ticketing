@@ -5,20 +5,20 @@ import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
 
-export default function Create(props) {
+export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected }) {
     async function checkWallet() {
         try {
             await window.ethereum.request({ method: "eth_requestAccounts" });
             const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-            props.setProvider(web3Provider);
+            setProvider(web3Provider);
             const signer = web3Provider.getSigner();
-            props.setAddress((await signer).getAddress());
+            setAddress((await signer).getAddress());
     
             window.ethereum.on('accountsChanged', async () => {
                 if(window.ethereum.selectedAd1dress) {
-                  (await signer).getAddress().then(props.setAddress);
+                  (await signer).getAddress().then(setAddress);
                 } else {
-                  props.setIsWalletConnected(false);
+                  setIsWalletConnected(false);
                 }
             });
     
@@ -26,7 +26,7 @@ export default function Create(props) {
                 window.location.reload();
             });
     
-            props.setIsWalletConnected(true);
+            setIsWalletConnected(true);
         }catch(err) {
             console.log(err);
         }
@@ -55,7 +55,7 @@ export default function Create(props) {
         event.preventDefault();
         console.log(formData);
         // Perform form submission logic here
-        const signer = props.provider.getSigner();
+        const signer = provider.getSigner();
         const contractFactory = new ethers.ContractFactory(
             NftContract.abi,
             NftContract.bytecode,
@@ -72,7 +72,7 @@ export default function Create(props) {
         const registryAddress = "0xbCF26943C0197d2eE0E5D05c716Be60cc2761508";
         const registry = new ethers.Contract(registryAddress, registryAbi, signer);
 
-        const owner = props.address;
+        const owner = address;
         const deployedAddress = contract.address;
         registry.registerContract(owner, deployedAddress).then((transaction) => {
             console.log("Added ", transaction);
@@ -89,10 +89,10 @@ export default function Create(props) {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header metamaskMessage={props.metamaskMessage} setMetamaskMessage={props.setMetamaskMessage} isWalletConnected={props.isWalletConnected} setIsWalletConnected={props.setIsWalletConnected} provider={props.provider} setProvider={props.setProvider} address={props.address} setAddress={props.setAddress}></Header>
+            <Header metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} setProvider={setProvider} setAddress={setAddress}></Header>
             <main>
 				{
-					props.isWalletConnected?
+					isWalletConnected?
 					<div>
 						<form id="create-event-form" onSubmit={handleSubmit}>
                             <label htmlFor="event-name">Event Name:</label>
