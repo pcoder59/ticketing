@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
+import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
 
 export default function Create(props) {
     async function checkWallet() {
@@ -66,6 +67,18 @@ export default function Create(props) {
         await contract.deployed();
 
         console.log("Contract Deployed at Address: ", contract.address);
+
+        var registryAbi = ContractRegistry.abi;
+        const registryAddress = "0xbCF26943C0197d2eE0E5D05c716Be60cc2761508";
+        const registry = new ethers.Contract(registryAddress, registryAbi, signer);
+
+        const owner = props.address;
+        const deployedAddress = contract.address;
+        registry.registerContract(owner, deployedAddress).then((transaction) => {
+            console.log("Added ", transaction);
+        }).catch((error) => {
+            console.log("Error ", error);
+        });
     };
 
     return (
