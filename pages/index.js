@@ -1,9 +1,9 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Header from '@/components/header';
 import { ethers } from 'ethers';
 
-export default function Home({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected }) {
+export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected }) {
   async function checkWallet() {
     try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
