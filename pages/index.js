@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
 import HomePage from '@/components/homepage';
 
-export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected, provider, contractRegistryAddress }) {
+export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected, provider, contractRegistryAddress, address }) {
   const [deployed, setDeployed] = useState([]);
   async function checkWallet() {
     try {
@@ -61,7 +61,7 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} setProvider={setProvider} setAddress={setAddress}></Header>
-      {isWalletConnected?<HomePage deployed={deployed} provider={provider}></HomePage>:null}
+      {isWalletConnected?<HomePage deployed={deployed} provider={provider} address={address}></HomePage>:null}
     </>
   )
 }

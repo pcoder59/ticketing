@@ -2,20 +2,25 @@ import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import { useEffect, useState } from "react";
 
-export default function HomePage({ deployed, provider }) {
+export default function HomePage({ deployed, provider, address }) {
     const [details, setDetails] = useState([]);
 
     async function getDetails() {
         var detail = [];
-        for(const address of deployed) {
-            const contract = new ethers.Contract(address, NftContract.abi, provider);
+        for(const ownerAddress of deployed) {
+            const contractAddress = ownerAddress;
+            const contract = new ethers.Contract(ownerAddress, NftContract.abi, provider);
             const eventName = await contract.name();
             const eventDateTime = await contract.datetime();
             const eventLocation = await contract.location();
             const eventDescription = await contract.description();
+            const organizer = await contract.organizer();
             var ticketPrice = await contract.ticketPrice();
             ticketPrice = (ticketPrice.toNumber())/1000000000000000000;
-            detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice });
+            const connectedAddress = await address;
+            if(organizer != connectedAddress) {
+                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress });
+            }
         }
         setDetails(detail);
     }
@@ -23,6 +28,11 @@ export default function HomePage({ deployed, provider }) {
     useEffect(() => {
         getDetails();
     }, [details]);
+
+    function handleSubmit(event, contractAddress) {
+        event.preventDefault();
+        console.log(contractAddress);
+    }
 
     return (
         <>
@@ -39,7 +49,7 @@ export default function HomePage({ deployed, provider }) {
                         </section>
                         <section id="buy-ticket">
                             <h2>Buy Ticket</h2>
-                            <form>
+                            <form onSubmit={(event) => handleSubmit(event, detail.contractAddress)}>
                                 <button type="submit">Buy Ticket</button>
                             </form>
                         </section>
