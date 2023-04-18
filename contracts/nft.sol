@@ -9,16 +9,16 @@ contract TicketingSystem is ERC721 {
     uint256 public totalTickets;
     uint256 public ticketsSold;
     bool public isActive;
-    string description;
-    string datetime;
-    string location;
+    string public description;
+    string public datetime;
+    string public location;
     
     constructor(string memory _name, string memory _symbol, uint256 _ticketPrice, uint256 _totalTickets, string memory _description, string memory _datetime, string memory _location) ERC721(_name, _symbol) {
         organizer = msg.sender;
         ticketPrice = _ticketPrice;
         totalTickets = _totalTickets;
         ticketsSold = 0;
-        isActive = false;
+        isActive = true;
         description = _description;
         datetime = _datetime;
         location = _location;

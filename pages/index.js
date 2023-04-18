@@ -1,9 +1,12 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '@/components/header';
 import { ethers } from 'ethers';
+import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
+import HomePage from '@/components/homepage';
 
-export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected }) {
+export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected, provider, contractRegistryAddress }) {
+  const [deployed, setDeployed] = useState([]);
   async function checkWallet() {
     try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -24,7 +27,22 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
             window.location.reload();
         });
 
-        setIsWalletConnected(true);
+        await setIsWalletConnected(true);
+
+        try {
+          const contractRegistry = new ethers.Contract(contractRegistryAddress, ContractRegistry.abi, web3Provider);
+          const owners = await contractRegistry.getOwners();
+          for(const owner of owners) {
+            const deployedContracts = await contractRegistry.getDeployedContracts(owner);
+            const contracts = [];
+            for(const contract of deployedContracts) {
+              contracts.push(contract);
+            }
+            setDeployed(contracts);
+          }
+        }catch(err) {
+          console.log(err);
+        }
     }catch(err) {
         console.log(err);
     }
@@ -32,7 +50,7 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
 
   useEffect(() => {
     checkWallet();
-  }, []);
+  }, [isWalletConnected]);
 
   return (
     <>
@@ -43,6 +61,7 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} setProvider={setProvider} setAddress={setAddress}></Header>
+      {isWalletConnected?<HomePage deployed={deployed} provider={provider}></HomePage>:null}
     </>
   )
 }

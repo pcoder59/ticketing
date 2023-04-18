@@ -58,9 +58,6 @@ export default function Header({ metamaskMessage, setMetamaskMessage, setAddress
                     {isWalletConnected ? (
                         <div>
                         <li style={{display: 'inline'}}>
-                            <a href="/buy-tickets">Buy Tickets</a>
-                        </li>
-                        <li style={{display: 'inline'}}>
                             <Link href="/create" id="create">
                             Create Events
                             </Link>

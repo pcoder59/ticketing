@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
 
-export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected }) {
+export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress }) {
     async function checkWallet() {
         try {
             await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -69,7 +69,7 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         console.log("Contract Deployed at Address: ", contract.address);
 
         var registryAbi = ContractRegistry.abi;
-        const registryAddress = process.env.CONTRACT_REGISTRY_ADDRESS;
+        const registryAddress = contractRegistryAddress;
         const registry = new ethers.Contract(registryAddress, registryAbi, signer);
 
         const owner = address;
