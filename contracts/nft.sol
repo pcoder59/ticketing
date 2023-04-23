@@ -29,6 +29,8 @@ contract TicketingSystem is ERC721 {
         require(ticketsSold < totalTickets, "All tickets have been sold");
         require(msg.value == ticketPrice, "Incorrect ticket price");
         uint256 ticketId = ticketsSold + 1;
+        address payable receiver = payable(organizer);
+        receiver.transfer(msg.value);
         _safeMint(msg.sender, ticketId);
         ticketsSold++;
     }
