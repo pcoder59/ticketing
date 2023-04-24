@@ -29,9 +29,18 @@ export default function HomePage({ deployed, provider, address }) {
         getDetails();
     }, [details]);
 
-    function handleSubmit(event, contractAddress) {
+    function handleSubmit(event, contractAddress, ticketPrice) {
         event.preventDefault();
         console.log(contractAddress);
+        const nftabi = NftContract.abi;
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, nftabi, signer);
+        const value = ticketPrice * 1000000000000000000;
+        contract.buyTicket({value: value}).then((transaction) => {
+            console.log("Bought ", transaction);
+        }).catch((error) => {
+            console.log("Error ", error);
+        });
     }
 
     return (
@@ -49,7 +58,7 @@ export default function HomePage({ deployed, provider, address }) {
                         </section>
                         <section id="buy-ticket">
                             <h2>Buy Ticket</h2>
-                            <form onSubmit={(event) => handleSubmit(event, detail.contractAddress)}>
+                            <form onSubmit={(event) => handleSubmit(event, detail.contractAddress, detail.ticketPrice)}>
                                 <button type="submit">Buy Ticket</button>
                             </form>
                         </section>
