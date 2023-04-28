@@ -28,9 +28,7 @@ export default function HomePage({ deployed, provider, address }) {
     }
 
     useEffect(() => {
-        if(!details.length) {
-            getDetails();
-        }
+        getDetails();
     }, [details]);
 
     function handleSubmit(event, contractAddress, ticketPrice) {

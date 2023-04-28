@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }) {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [provider, setProvider] = useState(null);
   const [address, setAddress] = useState(null);
-  const [contractRegistryAddress] = useState("0x5FbDB2315678afecb367f032d93F642f64180aa3");
+  const [contractRegistryAddress] = useState("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512");
 
   return <Component {...pageProps} metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} provider={provider} setProvider={setProvider} address={address} setAddress={setAddress} contractRegistryAddress={contractRegistryAddress}/>
 }

@@ -63,7 +63,7 @@ export default function Header({ metamaskMessage, setMetamaskMessage, setAddress
                             </Link>
                         </li>
                         <li style={{display: 'inline'}}>
-                            <a href="/inventory" id="inventory">
+                            <a href="/myticks" id="myticks">
                             My Account
                             </a>
                         </li>
