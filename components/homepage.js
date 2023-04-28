@@ -28,7 +28,9 @@ export default function HomePage({ deployed, provider, address }) {
     }
 
     useEffect(() => {
-        getDetails();
+        if(!details.length) {
+            getDetails();
+        }
     }, [details]);
 
     function handleSubmit(event, contractAddress, ticketPrice) {
@@ -40,6 +42,7 @@ export default function HomePage({ deployed, provider, address }) {
         const value = ethers.utils.parseEther(ticketPrice.toString());
         contract.buyTicket({value: value}).then((transaction) => {
             console.log("Bought ", transaction);
+            alert("You Buy the Ticket for the event successfully!");
         }).catch((error) => {
             console.log("Error ", error);
         });
