@@ -8,6 +8,36 @@ import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistr
 export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress }) {
     const [contractAddress, setContractAddress] = useState(null);
 
+    async function checkWallet() {
+        try {
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+            setProvider(web3Provider);
+            const signer = web3Provider.getSigner();
+            setAddress((await signer).getAddress());
+    
+            window.ethereum.on('accountsChanged', async () => {
+                if(window.ethereum.selectedAd1dress) {
+                  (await signer).getAddress().then(setAddress);
+                } else {
+                  setIsWalletConnected(false);
+                }
+            });
+    
+            window.ethereum.on('chainChanged', () => {
+                window.location.reload();
+            });
+    
+            setIsWalletConnected(true);
+        }catch(err) {
+            console.log(err);
+        }
+      }
+
+    useEffect(() => {
+        checkWallet();
+    }, []);
+
     const [formData, setFormData] = useState({
         name: '',
         symbol: '',
