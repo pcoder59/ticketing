@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.2",
+    "bignumber.js": "^9.1.1",
     "dotenv": "^16.0.3",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",

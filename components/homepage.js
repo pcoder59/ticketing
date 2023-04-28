@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import { useEffect, useState } from "react";
 
@@ -16,7 +16,9 @@ export default function HomePage({ deployed, provider, address }) {
             const eventDescription = await contract.description();
             const organizer = await contract.organizer();
             var ticketPrice = await contract.ticketPrice();
-            ticketPrice = (ticketPrice.toNumber())/1000000000000000000;
+            var denominator = BigNumber.from('1000000000000000000');
+            ticketPrice = ticketPrice.div(denominator);
+            ticketPrice = ticketPrice.toString();
             const connectedAddress = await address;
             if(organizer != connectedAddress) {
                 detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress });
@@ -35,7 +37,7 @@ export default function HomePage({ deployed, provider, address }) {
         const nftabi = NftContract.abi;
         const signer = provider.getSigner();
         const contract = new ethers.Contract(contractAddress, nftabi, signer);
-        const value = ticketPrice * 1000000000000000000;
+        const value = ethers.utils.parseEther(ticketPrice.toString());
         contract.buyTicket({value: value}).then((transaction) => {
             console.log("Bought ", transaction);
         }).catch((error) => {
