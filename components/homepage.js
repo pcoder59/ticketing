@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 
 export default function HomePage({ deployed, provider, address }) {
     const [details, setDetails] = useState([]);
+    const [checked, setChecked] = useState(false);
 
     async function getDetails() {
+        console.log(deployed);
         var detail = [];
         for(const ownerAddress of deployed) {
             const contractAddress = ownerAddress;
@@ -24,12 +26,16 @@ export default function HomePage({ deployed, provider, address }) {
                 detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress });
             }
         }
-        setDetails(detail);
+        return detail;
     }
 
     useEffect(() => {
-        getDetails();
-    }, [details]);
+        async function fetchdata() {
+            const details = await getDetails();
+            setDetails(details);
+        }
+        fetchdata();
+    }, [deployed]);
 
     function handleSubmit(event, contractAddress, ticketPrice) {
         event.preventDefault();
@@ -48,11 +54,12 @@ export default function HomePage({ deployed, provider, address }) {
 
     return (
         <>
-            {details.map(function(detail, index){
+            <h2>Event Details</h2>
+            {details.length > 0 ? (
+            details.map(function(detail, index){
                 return (
                     <div key={index}>
                         <section id="event-details">
-                            <h2>Event Details</h2>
                             <p><strong>Event Name:</strong> {detail.eventName}</p>
                             <p><strong>Date and Time:</strong> {detail.eventDateTime}</p>
                             <p><strong>Venue:</strong> {detail.eventLocation}</p>
@@ -67,7 +74,9 @@ export default function HomePage({ deployed, provider, address }) {
                         </section>
                     </div>
                 );
-            })}
+            })): (
+                <p>No Events!</p>
+            )}
         </>
     );
 }
