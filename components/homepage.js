@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 
 export default function HomePage({ deployed, provider, address }) {
     const [details, setDetails] = useState([]);
-    const [checked, setChecked] = useState(false);
 
     async function getDetails() {
-        console.log(deployed);
         var detail = [];
         for(const ownerAddress of deployed) {
             const contractAddress = ownerAddress;
@@ -17,24 +15,26 @@ export default function HomePage({ deployed, provider, address }) {
             const eventLocation = await contract.location();
             const eventDescription = await contract.description();
             const organizer = await contract.organizer();
+            const isactive = await contract.isActive();
+            var ticketsold = await contract.ticketsSold();
+            var totaltickets = await contract.totalTickets();
+            ticketsold = ticketsold.toNumber();
+            totaltickets = totaltickets.toNumber();
+            var remaining = totaltickets - ticketsold;
             var ticketPrice = await contract.ticketPrice();
             var denominator = BigNumber.from('1000000000000000000');
             ticketPrice = ticketPrice.div(denominator);
             ticketPrice = ticketPrice.toString();
             const connectedAddress = await address;
             if(organizer != connectedAddress) {
-                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress });
+                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining });
             }
         }
-        return detail;
+        setDetails(detail);
     }
 
     useEffect(() => {
-        async function fetchdata() {
-            const details = await getDetails();
-            setDetails(details);
-        }
-        fetchdata();
+        getDetails();
     }, [deployed]);
 
     function handleSubmit(event, contractAddress, ticketPrice) {
@@ -46,7 +46,6 @@ export default function HomePage({ deployed, provider, address }) {
         const value = ethers.utils.parseEther(ticketPrice.toString());
         contract.buyTicket({value: value}).then((transaction) => {
             console.log("Bought ", transaction);
-            alert("You Buy the Ticket for the event successfully!");
         }).catch((error) => {
             console.log("Error ", error);
         });
@@ -54,29 +53,31 @@ export default function HomePage({ deployed, provider, address }) {
 
     return (
         <>
-            <h2>Event Details</h2>
-            {details.length > 0 ? (
-            details.map(function(detail, index){
+            {details.map(function(detail, index){
                 return (
                     <div key={index}>
                         <section id="event-details">
+                            <h2>Event Details</h2>
                             <p><strong>Event Name:</strong> {detail.eventName}</p>
                             <p><strong>Date and Time:</strong> {detail.eventDateTime}</p>
                             <p><strong>Venue:</strong> {detail.eventLocation}</p>
                             <p><strong>Description:</strong> {detail.eventDescription}</p>
                             <p><strong>Ticket Price:</strong> {detail.ticketPrice} ETH</p>
+                            <p><strong>Tickets Left: </strong> {detail.remaining} / {detail.totaltickets}</p>
                         </section>
                         <section id="buy-ticket">
                             <h2>Buy Ticket</h2>
                             <form onSubmit={(event) => handleSubmit(event, detail.contractAddress, detail.ticketPrice)}>
-                                <button type="submit">Buy Ticket</button>
+                                {detail.isactive?
+                                    <button type="submit">Buy Ticket</button>
+                                    :
+                                    <button type="submit" disabled>Sold Out</button>
+                                }
                             </form>
                         </section>
                     </div>
                 );
-            })): (
-                <p>No Events!</p>
-            )}
+            })}
         </>
     );
 }
