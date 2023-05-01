@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ethers } from "ethers";
 
 export default function Header({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected }) {
-
     async function handleConnectWallet() {
         if(typeof window.ethereum !== "undefined") {
             try {
@@ -63,9 +62,9 @@ export default function Header({ metamaskMessage, setMetamaskMessage, setAddress
                             </Link>
                         </li>
                         <li style={{display: 'inline'}}>
-                            <a href="/myticks" id="myticks">
+                            <Link href="/myticks" id="myticks">
                             My Account
-                            </a>
+                            </Link>
                         </li>
                         </div>
                     ) : null}
