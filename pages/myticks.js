@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
 
-export default function MyTicks({ metamaskMessage, setMetamaskMessage, isWalletConnected, setIsWalletConnected, setProvider, setAddress, provider, address, contractRegistryAddress }) {
+export default function MyTicks({ metamaskMessage, setMetamaskMessage, isWalletConnected, setIsWalletConnected, setProvider, setAddress, provider, address, contractRegistryAddress, marketplaceAddress }) {
     const [deployed, setDeployed] = useState([]);
 
     async function checkWallet() {
@@ -68,7 +68,7 @@ export default function MyTicks({ metamaskMessage, setMetamaskMessage, isWalletC
                 <h2>Created Events</h2>
                 <Events deployed={deployed} provider={provider} address={address}></Events>
                 <h2>Owned Tickets</h2>
-                <Inventory deployed={deployed} provider={provider} address={address}></Inventory>
+                <Inventory deployed={deployed} provider={provider} address={address} marketplaceAddress={marketplaceAddress}></Inventory>
             </main>
         </>
     )

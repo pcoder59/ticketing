@@ -66,6 +66,11 @@ export default function Header({ metamaskMessage, setMetamaskMessage, setAddress
                             My Account
                             </Link>
                         </li>
+                        <li style={{display: 'inline'}}>
+                            <Link href="/marketplace" id="marketplace">
+                                Marketplace
+                            </Link>
+                        </li>
                         </div>
                     ) : null}
                     {!isWalletConnected?

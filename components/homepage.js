@@ -37,7 +37,7 @@ export default function HomePage({ deployed, provider, address }) {
         getDetails();
     }, [deployed]);
 
-    function handleSubmit(event, contractAddress, ticketPrice) {
+    async function handleSubmit(event, contractAddress, ticketPrice) {
         event.preventDefault();
         console.log(contractAddress);
         const nftabi = NftContract.abi;

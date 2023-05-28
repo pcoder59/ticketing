@@ -4,8 +4,9 @@ import Header from "@/components/header";
 import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
+import NFTMarketplace from '../artifacts/contracts/marketplace.sol/NFTMarketplace.json';
 
-export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress }) {
+export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress, marketplaceAddress }) {
     const [contractAddress, setContractAddress] = useState(null);
 
     async function checkWallet() {
@@ -71,6 +72,10 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         await contract.deployed();
 
         console.log("Contract Deployed at Address: ", contract.address);
+        var nftAbi = NftContract.abi;
+        const nftAddress = contract.address;
+        const deployedContract = new ethers.Contract(nftAddress, nftAbi, signer);
+        await deployedContract.setApprovalForAll(marketplaceAddress, true);
         setContractAddress(contract.address);
 
         var registryAbi = ContractRegistry.abi;
@@ -79,7 +84,7 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
 
         const owner = address;
         const deployedAddress = contract.address;
-        registry.registerContract(owner, deployedAddress).then((transaction) => {
+        await registry.registerContract(owner, deployedAddress).then((transaction) => {
             console.log("Added ", transaction);
         }).catch((error) => {
             console.log("Error ", error);

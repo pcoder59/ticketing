@@ -27,7 +27,7 @@ export default function Events({ deployed, provider, address }) {
             ticketPrice = ticketPrice.toString();
             const connectedAddress = await address;
             if(organizer == connectedAddress) {
-                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining });
+                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining, ticketsold });
             }
         }
         setDetails(detail);
@@ -36,6 +36,19 @@ export default function Events({ deployed, provider, address }) {
     useEffect(() => {
         getDetails();
     }, [deployed]);
+
+    function handleSubmit(event, contractAddress, ticketPrice) {
+        event.preventDefault();
+        console.log(contractAddress);
+        const nftabi = NftContract.abi;
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, nftabi, signer);
+        contract.closeTicketSales().then((transaction) => {
+            console.log("Cancelled ", transaction);
+        }).catch((error) => {
+            console.log("Error ", error);
+        });
+    }
 
     return (
         <div>
@@ -46,6 +59,7 @@ export default function Events({ deployed, provider, address }) {
                 <th>Date</th>
                 <th>Location</th>
                 <th>Price</th>
+                <th>Action</th>
                 </tr>
             </thead>
             <tbody id="event-table">
@@ -56,6 +70,15 @@ export default function Events({ deployed, provider, address }) {
                             <th>{detail.eventDateTime}</th>
                             <th>{detail.eventLocation}</th>
                             <th>{detail.ticketPrice}</th>
+                            <th>
+                                <form onSubmit={(event) => handleSubmit(event, detail.contractAddress)}>
+                                {detail.isactive?
+                                    <button type="submit">Cancel Event</button>
+                                    :
+                                    <button type="submit" disabled>Sold Out</button>
+                                }
+                                </form>
+                            </th>
                         </tr>
                     );
                 })}

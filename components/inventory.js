@@ -1,15 +1,25 @@
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
+import MarketplaceContract from '../artifacts/contracts/marketplace.sol/NFTMarketplace.json';
 import { useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 
-export default function Inventory({ deployed, provider, address }) {
+export default function Inventory({ deployed, provider, address, marketplaceAddress }) {
     const [details, setDetails] = useState([]);
+    const [formData, setFormData] = useState({
+        price: ''
+    });
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
     async function getDetails() {
         var detail = [];
         for(const ownerAddress of deployed) {
             const contractAddress = ownerAddress;
             const contract = new ethers.Contract(ownerAddress, NftContract.abi, provider);
+            const marketplace = new ethers.Contract(marketplaceAddress, MarketplaceContract.abi, provider);
             const eventName = await contract.name();
             const eventDateTime = await contract.datetime();
             const eventLocation = await contract.location();
@@ -28,8 +38,12 @@ export default function Inventory({ deployed, provider, address }) {
             const connectedAddress = await address;
             var balance = await contract.balanceOf(connectedAddress);
             balance = balance.toNumber();
-            if(balance > 0) {
-                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining, balance });
+            const ticketids = await contract.getTicketIdsByOwner(connectedAddress);
+            for(let i = 0; i < ticketids.length; i++) {
+                var ticketid = ticketids[i].toNumber();
+                const forsale = await marketplace.isNFTListed(contractAddress, ticketid);
+                console.log(forsale);
+                detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining, balance, ticketid, forsale });
             }
         }
         setDetails(detail);
@@ -39,6 +53,23 @@ export default function Inventory({ deployed, provider, address }) {
         getDetails();
     }, [deployed]);
 
+    async function handleSubmit(event, contractAddress, price, ticketid, title) {
+        event.preventDefault();
+        const signer = provider.getSigner();
+        const marketplace = new ethers.Contract(marketplaceAddress, MarketplaceContract.abi, signer);
+        const value = ethers.utils.parseEther(price);
+        
+        await marketplace.listNFT(contractAddress, ticketid, value, title);
+    }
+
+    async function handleCancel(event, contractAddress, ticketid) {
+        event.preventDefault();
+        const signer = provider.getSigner();
+        const marketplace = new ethers.Contract(marketplaceAddress, MarketplaceContract.abi, signer);
+        var listingid = await marketplace.getListingId(contractAddress, ticketid);
+        marketplace.cancelListing(listingid.toNumber());
+    }
+
     return (
         <div>
             <table>
@@ -47,7 +78,8 @@ export default function Inventory({ deployed, provider, address }) {
                 <th>Title</th>
                 <th>Date</th>
                 <th>Location</th>
-                <th>Number of Tickets</th>
+                <th>Ticket ID</th>
+                <th>Action</th>
                 </tr>
             </thead>
             <tbody id="ticket-table">
@@ -57,7 +89,23 @@ export default function Inventory({ deployed, provider, address }) {
                             <th>{detail.eventName}</th>
                             <th>{detail.eventDateTime}</th>
                             <th>{detail.eventLocation}</th>
-                            <th>{detail.balance}</th>
+                            <th>{detail.ticketid}</th>
+                            <th>
+                            {detail.forsale?
+                                <form onSubmit={(event) => handleCancel(event, detail.contractAddress, detail.ticketid)}>
+                                    <div>
+                                        <button type="submit">Cancel Sale</button>
+                                    </div>
+                                </form>
+                            :
+                                <form onSubmit={(event) => handleSubmit(event, detail.contractAddress, formData.price, detail.ticketid, detail.eventName)}>
+                                    <div>
+                                        <input type="number" step="0.001" value={formData.price} placeholder="Enter Price" onChange={handleChange} name='price'></input>
+                                        <button type="submit">Sell Ticket</button>
+                                    </div>
+                                </form>
+                            }
+                            </th>
                         </tr>
                     );
                 })}
