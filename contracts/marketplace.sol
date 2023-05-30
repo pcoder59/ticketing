@@ -60,9 +60,6 @@ contract NFTMarketplace {
         IERC721 nft = IERC721(listing.nftContract);
         require(nft.ownerOf(listing.tokenId) == listing.seller, "Seller no longer owns the NFT");
 
-        // Approve the marketplace contract to transfer the NFT
-        nft.approve(address(this), listing.tokenId);
-
         address payable seller = payable(listing.seller);
         seller.transfer(listing.price);
 

@@ -72,10 +72,6 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         await contract.deployed();
 
         console.log("Contract Deployed at Address: ", contract.address);
-        var nftAbi = NftContract.abi;
-        const nftAddress = contract.address;
-        const deployedContract = new ethers.Contract(nftAddress, nftAbi, signer);
-        await deployedContract.setApprovalForAll(marketplaceAddress, true);
         setContractAddress(contract.address);
 
         var registryAbi = ContractRegistry.abi;

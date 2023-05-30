@@ -58,7 +58,10 @@ export default function Inventory({ deployed, provider, address, marketplaceAddr
         const signer = provider.getSigner();
         const marketplace = new ethers.Contract(marketplaceAddress, MarketplaceContract.abi, signer);
         const value = ethers.utils.parseEther(price);
-        
+        var nftAbi = NftContract.abi;
+        const nftAddress = contractAddress;
+        const deployedContract = new ethers.Contract(nftAddress, nftAbi, signer);
+        await deployedContract.setApprovalForAll(marketplaceAddress, true);
         await marketplace.listNFT(contractAddress, ticketid, value, title);
     }
 

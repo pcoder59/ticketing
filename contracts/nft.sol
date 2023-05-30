@@ -68,15 +68,19 @@ contract TicketingSystem is ERC721 {
         return ownedTokens[_owner];
     }
 
-    function transferTicket(address _to, uint256 _tokenId) public {
-        require(_exists(_tokenId), "Ticket does not exist");
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override {
         require(
-            ownerOf(_tokenId) == msg.sender,
-            "You do not own this ticket"
+            _isApprovedOrOwner(msg.sender, tokenId),
+            "ERC721: transfer caller is not owner nor approved"
         );
-        safeTransferFrom(msg.sender, _to, _tokenId);
-        removeTokenFromOwner(msg.sender, _tokenId);
-        ownedTokens[_to].push(_tokenId);
+
+        _safeTransfer(from, to, tokenId, "");
+        removeTokenFromOwner(from, tokenId);
+        ownedTokens[to].push(tokenId);
     }
 
     function removeTokenFromOwner(address _owner, uint256 _tokenId) private {

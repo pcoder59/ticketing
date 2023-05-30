@@ -30,6 +30,7 @@ export default function HomePage({ deployed, provider, address }) {
                 detail.push({ eventName, eventDateTime, eventLocation, eventDescription, ticketPrice, contractAddress, isactive, totaltickets, remaining });
             }
         }
+        console.log(detail);
         setDetails(detail);
     }
 
