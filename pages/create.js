@@ -4,7 +4,6 @@ import Header from "@/components/header";
 import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
-import NFTMarketplace from '../artifacts/contracts/marketplace.sol/NFTMarketplace.json';
 
 export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress, marketplaceAddress }) {
     const [contractAddress, setContractAddress] = useState(null);
