@@ -14,6 +14,7 @@ contract TicketingSystem is ERC721 {
     string public description;
     string public datetime;
     string public location;
+    string public baseURI;
 
     mapping(address => uint256[]) private ownedTokens;
 
@@ -24,7 +25,8 @@ contract TicketingSystem is ERC721 {
         uint256 _totalTickets,
         string memory _description,
         string memory _datetime,
-        string memory _location
+        string memory _location,
+        string memory _baseURI
     ) ERC721(_name, _symbol) payable {
         require(
             msg.value == deploymentFee,
@@ -40,6 +42,7 @@ contract TicketingSystem is ERC721 {
         description = _description;
         datetime = _datetime;
         location = _location;
+        baseURI = _baseURI;
     }
 
     function buyTicket() public payable {
@@ -53,6 +56,8 @@ contract TicketingSystem is ERC721 {
         address payable receiver = payable(organizer);
         receiver.transfer(msg.value);
         _safeMint(msg.sender, ticketId);
+        string newURI = "localhost:8080/ipfs/" + baseURI + "?filename=" + ticketId + ".json";
+        _setTokenURI(ticketId, newURI);
         ticketsSold++;
         ownedTokens[msg.sender].push(ticketId);
         if (ticketsSold == totalTickets) {

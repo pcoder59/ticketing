@@ -46,7 +46,8 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         count: '',
         description: '',
         datetime: '',
-        location: ''
+        location: '',
+        ipfs: ''
     });
 
     const handleChange = (event) => {
@@ -67,7 +68,7 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
 
         const amount = ethers.utils.parseEther(formData.price);
         const value = ethers.utils.parseEther('1');
-        const contract = await contractFactory.deploy(formData.name, formData.symbol, amount, formData.count, formData.description, formData.datetime, formData.location, {value: value});
+        const contract = await contractFactory.deploy(formData.name, formData.symbol, amount, formData.count, formData.description, formData.datetime, formData.location, {value: value}, formData.ipfs);
 
         await contract.deployed();
 
@@ -121,6 +122,9 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
 
                             <label htmlFor="event-ticket-count">Number of Tickets:</label>
                             <input type="number" step="1" id="event-ticket-count" value={formData.count} name="count" onChange={handleChange}></input>
+
+                            <label htmlFor="ipfs">IPFS Folder CID:</label>
+                            <input type="text" id="ipfs" value={formData.ipfs} name="ipfs" onChange={handleChange}></input>
 
                             <button type="submit">Create Event</button>
                         </form>
