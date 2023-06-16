@@ -49,6 +49,7 @@ export default function Sale({provider, marketplaceAddress, address}) {
             <table>
                 <thead>
                     <tr>
+                    <th>View</th>
                     <th>Token ID</th>
                     <th>Title</th>
                     <th>Price</th>
@@ -59,6 +60,7 @@ export default function Sale({provider, marketplaceAddress, address}) {
                     return(
                         <tbody key={index}>
                             <tr>
+                                
                                 <td>{detail.tokenId.toString()}</td>
                                 <td>{detail.title}</td>
                                 <td>{detail.price.div(BigNumber.from('1000000000000000000')).toString()}</td>

@@ -1,0 +1,97 @@
+.ticketTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .ticketTable th,
+  .ticketTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .ticketTable th {
+    background-color: #f2f2f2;
+  }
+  
+  .imageButton {
+    border: none;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+  }
+  
+  .imageButton img {
+    vertical-align: middle;
+  }
+  
+  .priceInputContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .priceInputContainer input {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  
+  .priceInputContainer button {
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancelSaleButton {
+    padding: 8px 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancelSaleButton:hover,
+  .priceInputContainer button:hover {
+    opacity: 0.8;
+  }
+  
+  .inventoryContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ticketImage {
+    display: inline-block;
+    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+  
+  .ticketTitle {
+    display: flex;
+    align-items: center;
+  }
+  
+  .ticketDetails {
+    margin-bottom: 16px;
+  }
+  
+  .noTicketsMessage {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin-top: 32px;
+  }
+  

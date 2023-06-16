@@ -2,11 +2,9 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import Header from '@/components/header';
 import { ethers } from 'ethers';
-import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
-import HomePage from '@/components/homepage';
+import Landing from '@/components/landing';
 
-export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected, provider, contractRegistryAddress, address }) {
-  const [deployed, setDeployed] = useState([]);
+export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, setProvider, isWalletConnected, setIsWalletConnected }) {
   async function checkWallet() {
     try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -28,21 +26,6 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
         });
 
         await setIsWalletConnected(true);
-
-        try {
-          const contractRegistry = new ethers.Contract(contractRegistryAddress, ContractRegistry.abi, web3Provider);
-          const owners = await contractRegistry.getOwners();
-          for(const owner of owners) {
-            const deployedContracts = await contractRegistry.getDeployedContracts(owner);
-            const contracts = [];
-            for(const contract of deployedContracts) {
-              contracts.push(contract);
-            }
-            setDeployed(contracts);
-          }
-        }catch(err) {
-          console.log(err);
-        }
     }catch(err) {
         console.log(err);
     }
@@ -61,7 +44,7 @@ export default function Home({ metamaskMessage, setMetamaskMessage, setAddress, 
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header metamaskMessage={metamaskMessage} setMetamaskMessage={setMetamaskMessage} isWalletConnected={isWalletConnected} setIsWalletConnected={setIsWalletConnected} setProvider={setProvider} setAddress={setAddress}></Header>
-      {isWalletConnected?<HomePage deployed={deployed} provider={provider} address={address}></HomePage>:null}
+      <Landing></Landing>
     </>
   )
 }

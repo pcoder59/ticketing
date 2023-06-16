@@ -1,0 +1,44 @@
+.eventContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  .eventDetails {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .eventImage {
+    width: 50%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+  
+  .buyTicket {
+    margin-top: 20px;
+  }
+  
+  .buyButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .soldOutButton {
+    background-color: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: not-allowed;
+  }
+  

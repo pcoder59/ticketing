@@ -16,6 +16,7 @@ contract TicketingSystem is ERC721 {
     string public location;
     string public baseURI;
 
+    mapping(uint256 => string) private tokenURIs;
     mapping(address => uint256[]) private ownedTokens;
 
     constructor(
@@ -56,8 +57,8 @@ contract TicketingSystem is ERC721 {
         address payable receiver = payable(organizer);
         receiver.transfer(msg.value);
         _safeMint(msg.sender, ticketId);
-        string newURI = "localhost:8080/ipfs/" + baseURI + "?filename=" + ticketId + ".json";
-        _setTokenURI(ticketId, newURI);
+        string memory tokenURI = string(abi.encodePacked("localhost:8080/ipfs/", baseURI, "/", uint2str(ticketId), ".json"));
+        tokenURIs[ticketId] = tokenURI;
         ticketsSold++;
         ownedTokens[msg.sender].push(ticketId);
         if (ticketsSold == totalTickets) {
@@ -71,6 +72,10 @@ contract TicketingSystem is ERC721 {
         returns (uint256[] memory)
     {
         return ownedTokens[_owner];
+    }
+
+    function getTokenURI(uint256 tokenId) public view returns (string memory) {
+        return tokenURIs[tokenId];
     }
 
     function safeTransferFrom(
@@ -124,5 +129,27 @@ contract TicketingSystem is ERC721 {
         if (address(this).balance > 0) {
             payable(organizer).transfer(address(this).balance);
         }
+    }
+
+    function uint2str(uint256 _i) internal pure returns (string memory) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint256 j = _i;
+        uint256 length;
+        while (j != 0) {
+            length++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(length);
+        uint256 k = length;
+        while (_i != 0) {
+            k = k - 1;
+            uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
     }
 }

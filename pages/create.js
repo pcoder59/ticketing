@@ -67,7 +67,7 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
 
         const amount = ethers.utils.parseEther(formData.price);
         const value = ethers.utils.parseEther('1');
-        const contract = await contractFactory.deploy(formData.name, formData.symbol, amount, formData.count, formData.description, formData.datetime, formData.location, {value: value}, formData.ipfs);
+        const contract = await contractFactory.deploy(formData.name, formData.symbol, amount, formData.count, formData.description, formData.datetime, formData.location, formData.ipfs, {value: value});
 
         await contract.deployed();
 

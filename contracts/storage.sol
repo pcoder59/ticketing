@@ -6,7 +6,7 @@ contract ContractRegistry {
     address[] private owners;
 
     function registerContract(address owner, address contractAddress) public {
-        if (deployedContracts[owner].length == 0) {
+        if (getDeployedContracts(owner).length == 0) {
             owners.push(owner);
         }
         deployedContracts[owner].push(contractAddress);
