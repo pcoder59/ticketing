@@ -85,11 +85,7 @@ export default function Header({ metamaskMessage, setMetamaskMessage, setAddress
                             </a>
                         </li>
                         :
-                        <li>
-                            <a href="#" id="disconnect">
-                            Disconnect Wallet
-                            </a>
-                        </li>
+                        null
                     }
                     </ul>
                 </nav>

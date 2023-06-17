@@ -13,7 +13,7 @@ export default function HomePage({ deployed, provider, address }) {
             const contractAddress = ownerAddress;
             const contract = new ethers.Contract(ownerAddress, NftContract.abi, provider);
             const cid = await contract.baseURI();
-            const fetchurl = cid + "/ticketimage.png";
+            const fetchurl = cid;
             const fileContent = await readFileFromIPFS(fetchurl);
             const imageUrl = URL.createObjectURL(fileContent);
             const eventName = await contract.name();

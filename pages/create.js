@@ -4,9 +4,12 @@ import Header from "@/components/header";
 import { ethers } from "ethers";
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import ContractRegistry from '../artifacts/contracts/storage.sol/ContractRegistry.json';
+import { writeFileToIPFS } from "./api/ipfsUtils";
+import { writeImageFileToIPFS } from "./api/ipfsUtils";
 
 export default function Create({ metamaskMessage, setMetamaskMessage, address, setAddress, provider, setProvider, isWalletConnected, setIsWalletConnected, contractRegistryAddress, marketplaceAddress }) {
     const [contractAddress, setContractAddress] = useState(null);
+    const [image, setImage] = useState(null);
 
     async function checkWallet() {
         try {
@@ -65,8 +68,16 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
             signer
         );
 
+        try {
+            const cid = await writeImageFileToIPFS(image);
+            formData.ipfs = cid;
+            console.log(cid);
+        }catch(error) {
+            console.log(error);
+        }
+
         const amount = ethers.utils.parseEther(formData.price);
-        const value = ethers.utils.parseEther('1');
+        const value = ethers.utils.parseEther('0.001');
         const contract = await contractFactory.deploy(formData.name, formData.symbol, amount, formData.count, formData.description, formData.datetime, formData.location, formData.ipfs, {value: value});
 
         await contract.deployed();
@@ -85,6 +96,10 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
         }).catch((error) => {
             console.log("Error ", error);
         });
+    };
+
+    const handleImageChange = (event) => {
+        setImage(event.target.files[0]);
     };
 
     return (
@@ -122,8 +137,8 @@ export default function Create({ metamaskMessage, setMetamaskMessage, address, s
                             <label htmlFor="event-ticket-count">Number of Tickets:</label>
                             <input type="number" step="1" id="event-ticket-count" value={formData.count} name="count" onChange={handleChange}></input>
 
-                            <label htmlFor="ipfs">IPFS Folder CID:</label>
-                            <input type="text" id="ipfs" value={formData.ipfs} name="ipfs" onChange={handleChange}></input>
+                            <label htmlFor="ipfs">Ticket Image:</label>
+                            <input type="file" accept="image/*" id="ipfs" name="ipfs" onChange={handleImageChange}></input>
 
                             <button type="submit">Create Event</button>
                         </form>

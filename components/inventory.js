@@ -9,10 +9,14 @@ import { readFileFromIPFS } from '@/pages/api/ipfsImage';
 export default function Inventory({ deployed, provider, address, marketplaceAddress }) {
     const [details, setDetails] = useState([]);
     const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+    const [contractAddress, setContractAddress] = useState(null);
+    const [ticketid, setTicketId] = useState(null);
 
-    const handleImageClick = (imageUrl) => {
+    const handleImageClick = (imageUrl, contractAddress, ticketid) => {
         console.log(imageUrl);
         setSelectedImageUrl(imageUrl);
+        setContractAddress(contractAddress);
+        setTicketId(ticketid);
     };
 
     const closePopup = () => {
@@ -35,7 +39,7 @@ export default function Inventory({ deployed, provider, address, marketplaceAddr
         const contract = new ethers.Contract(ownerAddress, NftContract.abi, provider);
         const marketplace = new ethers.Contract(marketplaceAddress, MarketplaceContract.abi, provider);
         const cid = await contract.baseURI();
-        const fetchurl = cid + "/ticketimage.png";
+        const fetchurl = cid;
         const fileContent = await readFileFromIPFS(fetchurl);
         const imageUrl = URL.createObjectURL(fileContent);
         const eventName = await contract.name();
@@ -122,7 +126,7 @@ export default function Inventory({ deployed, provider, address, marketplaceAddr
               <tr key={index}>
                 <td>
                   <button className={styles.imageButton}
-                  onClick={() => handleImageClick(detail.imageUrl)}
+                  onClick={() => handleImageClick(detail.imageUrl, detail.contractAddress, detail.ticketid)}
                   >
                     <img src="/img/popicon.png" alt="view nft image" width="5%" /> {detail.eventName}
                   </button>
@@ -157,9 +161,8 @@ export default function Inventory({ deployed, provider, address, marketplaceAddr
             ))}
           </tbody>
         </table>
-
         {selectedImageUrl && (
-            <Popup imageUrl={selectedImageUrl} onClose={closePopup} />
+            <Popup imageUrl={selectedImageUrl} onClose={closePopup} contractAddress={contractAddress} ticketid={ticketid} />
         )}
       </div>
     );

@@ -16,10 +16,13 @@
     "eslint-config-next": "13.3.0",
     "ethers": "^5.0.0",
     "hardhat": "^2.13.0",
+    "ipfs-http-client": "^60.0.1",
     "next": "13.3.0",
     "node-loader": "^2.0.0",
+    "qrcode": "^1.5.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-qr-code": "^2.0.11"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2"

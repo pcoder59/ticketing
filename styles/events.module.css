@@ -1,0 +1,46 @@
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .eventTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .eventTable th,
+  .eventTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .eventTable th {
+    background-color: #f2f2f2;
+  }
+  
+  .cancelButton {
+    background-color: #ff5757;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .soldOutButton {
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: not-allowed;
+  }
+  
+  .cancelButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  

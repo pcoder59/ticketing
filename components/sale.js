@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import MarketplaceContract from '../artifacts/contracts/marketplace.sol/NFTMarketplace.json';
 import { useEffect, useState } from 'react';
+import styles from '@/styles/sale.module.css';
 
 export default function Sale({provider, marketplaceAddress, address}) {
     const [listingsStore, setListingsStore] = useState([]);
@@ -46,10 +47,9 @@ export default function Sale({provider, marketplaceAddress, address}) {
 
     return (
         <>
-            <table>
+            <table className={styles.saleTable}>
                 <thead>
                     <tr>
-                    <th>View</th>
                     <th>Token ID</th>
                     <th>Title</th>
                     <th>Price</th>
@@ -67,7 +67,7 @@ export default function Sale({provider, marketplaceAddress, address}) {
                                 <td>
                                     <form onSubmit={(event) => handleSubmit(event, detail.tokenId, detail.price, detail.nftContract)}>
                                         <div>
-                                            <button type="submit">Buy NFT</button>
+                                            <button className={styles.buyButton} type="submit">Buy NFT</button>
                                         </div>
                                     </form>
                                 </td>

@@ -1,6 +1,7 @@
 import NftContract from '../artifacts/contracts/nft.sol/TicketingSystem.json';
 import { useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import styles from '@/styles/events.module.css';
 
 export default function Events({ deployed, provider, address }) {
     const [details, setDetails] = useState([]);
@@ -51,39 +52,47 @@ export default function Events({ deployed, provider, address }) {
     }
 
     return (
-        <div>
-            <table>
+        <div className={styles.container}>
+          <table className={styles.eventTable}>
             <thead>
-                <tr>
+              <tr>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Location</th>
                 <th>Price</th>
                 <th>Action</th>
-                </tr>
+              </tr>
             </thead>
             <tbody id="event-table">
-                {details.map((detail, index) => {
-                    return(
-                        <tr key={index}>
-                            <th>{detail.eventName}</th>
-                            <th>{detail.eventDateTime}</th>
-                            <th>{detail.eventLocation}</th>
-                            <th>{detail.ticketPrice}</th>
-                            <th>
-                                <form onSubmit={(event) => handleSubmit(event, detail.contractAddress)}>
-                                {detail.isactive?
-                                    <button type="submit">Cancel Event</button>
-                                    :
-                                    <button type="submit" disabled>Sold Out</button>
-                                }
-                                </form>
-                            </th>
-                        </tr>
-                    );
-                })}
+              {details.map((detail, index) => {
+                return (
+                  <tr key={index}>
+                    <th>{detail.eventName}</th>
+                    <th>{detail.eventDateTime}</th>
+                    <th>{detail.eventLocation}</th>
+                    <th>{detail.ticketPrice}</th>
+                    <th>
+                      <form
+                        onSubmit={(event) =>
+                          handleSubmit(event, detail.contractAddress)
+                        }
+                      >
+                        {detail.isactive ? (
+                          <button className={styles.cancelButton} type="submit">
+                            Cancel Event
+                          </button>
+                        ) : (
+                          <button className={styles.soldOutButton} type="submit" disabled>
+                            Sold Out
+                          </button>
+                        )}
+                      </form>
+                    </th>
+                  </tr>
+                );
+              })}
             </tbody>
-            </table>
+          </table>
         </div>
     );
 }
